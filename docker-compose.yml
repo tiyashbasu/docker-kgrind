@@ -1,0 +1,20 @@
+version: "3.4"
+
+services:
+
+  valgrind:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: valgrind
+    user: 1000:1000
+    volumes:
+      - ./subject:/valgrind/subject
+
+  kgrind:
+    build: .
+    network_mode: host
+    privileged: true
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ./subject:/valgrind/subject

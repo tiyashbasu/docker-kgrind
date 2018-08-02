@@ -1,0 +1,20 @@
+#!/bin/bash
+
+TOOL=$1
+shift
+BIN=$1
+shift
+ARGS=$@
+
+WDIR=$(dirname $(readlink -f $0))
+
+cp $BIN $WDIR/subject/
+BIN=$(basename $BIN)
+
+cd $WDIR
+docker-compose run valgrind valgrind --tool=$TOOL ./$BIN $ARGS
+docker-compose run kgrind kcachegrind $TOOL.out.1
+
+docker-compose down
+
+rm $WDIR/subject/$BIN
